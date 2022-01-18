@@ -6,8 +6,8 @@ module JqueryRjs::RenderingHelper
     if options == :update
       update_page(&block)
     else
-      args = options, locals, block
-      JqueryRjs.use_alias_method_chain? ? render_without_update(*args) : super(*args)
+      args = options, locals
+      JqueryRjs.use_alias_method_chain? ? render_without_update(*args, &block) : super(*args, &block)
     end
   end
 end
