@@ -197,7 +197,7 @@ module JqueryRjs::SelectorAssertions
 
   # +assert_select+ and +css_select+ call this to obtain the content in the HTML
   # page, or from all the RJS statements, depending on the type of response.
-  define_method("response_from_page#{'_with_rjs' if JqueryRjs.use_alias_method_chain?}") do
+  define_method("response_from_page") do
     content_type = @response.content_type
 
     if content_type && Mime[:js] =~ content_type
@@ -216,7 +216,7 @@ module JqueryRjs::SelectorAssertions
 
       root
     else
-      JqueryRjs.use_alias_method_chain? ? response_from_page_without_rjs : super()
+      super()
     end
   end
 
@@ -240,11 +240,4 @@ module_to_patch = if defined?(ActionDispatch::Assertions::SelectorAssertions)
                     Rails::Dom::Testing::Assertions::SelectorAssertions
                   end
 
-if JqueryRjs.use_alias_method_chain?
-  module_to_patch.module_eval do
-    include JqueryRjs::SelectorAssertions
-    alias_method_chain :response_from_page, :rjs
-  end
-else
-  module_to_patch.prepend(JqueryRjs::SelectorAssertions)
-end
+module_to_patch.prepend(JqueryRjs::SelectorAssertions)
